@@ -54,14 +54,12 @@ export class InMemoryDbService {
 
   update<EntityModel extends StoreItemEntity>(
     entityName: string,
-    id: number,
+    id: string,
     updatedObject: EntityModel,
   ): EntityModel | undefined {
     const entities = this.getEntitiesStoreByName<EntityModel>(entityName);
 
-    const entityPosition = this.getEntityIndex<EntityModel>(entities, {
-      habitid: id,
-    });
+    const entityPosition = this.getEntityIndex<EntityModel>(entities, id);
 
     if (entityPosition == -1) {
       return;
@@ -74,11 +72,11 @@ export class InMemoryDbService {
 
   delete<EntityModel extends StoreItemEntity>(
     entityName: string,
-    id: number,
+    id: string,
   ): EntityModel | undefined {
     const entities = this.getEntitiesStoreByName<EntityModel>(entityName);
 
-    const entityIndex = this.getEntityIndex(entities, { habitid: id });
+    const entityIndex = this.getEntityIndex(entities, id);
 
     if (entityIndex === -1) {
       return;
@@ -93,12 +91,9 @@ export class InMemoryDbService {
 
   private getEntityIndex<EntityModel extends StoreItemEntity>(
     entities: EntityModel[],
-    filter: { [key: string]: any },
+    id: string,
   ): number {
-    const index: number = entities.findIndex((entity) => {
-      const { key, j } = filter;
-      return entity[key] === j;
-    });
+    const index: number = entities.findIndex((entity) => entity.id === id);
 
     return index;
   }

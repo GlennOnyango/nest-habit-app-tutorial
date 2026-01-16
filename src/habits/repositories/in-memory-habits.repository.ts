@@ -52,7 +52,7 @@ export class InMemoryHabitsRepository {
     }
 
     const now = new Date();
-    const updatedHabit = this.db.update<HabitEntity>('habits', id, {
+    const updatedHabit = this.db.update<HabitEntity>('habits', habit.id, {
       ...habit,
       ...updatedHabitMeta,
       updatedAt: now,
@@ -70,7 +70,13 @@ export class InMemoryHabitsRepository {
   }
 
   deleteHabit(id: number): HabitDTO | undefined {
-    const deletedHabit = this.db.delete<HabitEntity>('habits', id);
+    const habit = this.db.findOneBy<HabitEntity>('habits', { habitid: id });
+
+    if (!habit) {
+      return;
+    }
+
+    const deletedHabit = this.db.delete<HabitEntity>('habits', habit.id);
 
     if (!deletedHabit) {
       return;
